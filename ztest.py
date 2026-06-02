@@ -57,3 +57,8 @@ print(myDict.keys())
 
 for key in myDict.keys():
     print(key, "→", type(key))
+
+
+
+for i in range(5):
+    print(i)
