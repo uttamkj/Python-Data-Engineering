@@ -63,3 +63,53 @@ def isPrimeOptimized3(num):
 
     return True
 
+import random
+
+def generatePassowrd(length):
+    uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWYZ'
+    lowercase = uppercase.lower()
+    numbers = '0123456789'
+    spacelCharacters = '!@#$%^&*'
+
+    password = ''
+    password = password + random.choice(uppercase)
+    password = password + random.choice(lowercase)
+    password = password + random.choice(numbers)
+    password = password + random.choice(spacelCharacters)
+
+    allcharcters = uppercase+lowercase+spacelCharacters+numbers
+
+    # password+=random.choice(allcharcters)
+    # password+=random.choice(allcharcters)
+    # password+=random.choice(allcharcters)
+    # password+=random.choice(allcharcters)
+    reqLength = length - len(password)
+
+    for i in range(reqLength):
+        password = password + random.choice(allcharcters)
+    return password
+
+# print(generatePassowrd())
+print(generatePassowrd(10))
+print(len(generatePassowrd(10)))
+
+
+# print(random.choice('123456789abcd'))
+
+'''
+List comperhansion : its a new way to create a new list based on a expression 
+
+'''
+x = [1,2,3,4,5,6]
+
+square = []
+for i in x:
+    square.append(i*i)
+
+# OAC output action condition
+square2 = [i*i for i in x]
+square3 = [i*i for i in x if i%2 ==0]
+
+
+print(square2)
+print(square3)
