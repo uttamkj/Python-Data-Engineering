@@ -235,12 +235,59 @@ Lambda functions are used heavily in PySpark UDFs (User Defined Functions) and p
 '''
 
 
-# PATTERN 1 — Column transformation with map+lambda raw_salaries = ["75,000", "88,000", " 52000 ", "91,000"] clean_sal = list(map( lambda s: float(s.strip().replace(",","")), raw_salaries )) print(clean_sal) # [75000.0, 88000.0, 52000.0, 91000.0] # PATTERN 2 — Derived column using map+lambda records = [ {"name":"Ravi", "salary":75000}, {"name":"Priya", "salary":88000}, {"name":"Ankit", "salary":52000}, ] # Add bonus column to every record with_bonus = list(map( lambda r: {**r, "bonus": round(r["salary"]*0.1,2)}, records )) for r in with_bonus: print(f"{r['name']:8} salary=₹{r['salary']} bonus=₹{r['bonus']}") # PATTERN 3 — Filter active + high earners employees = [ {"name":"Ravi", "salary":75000, "active":True}, {"name":"Priya", "salary":88000, "active":True}, {"name":"Ankit", "salary":52000, "active":False}, {"name":"Neha", "salary":91000, "active":True}, ] senior_active = list(filter( lambda e: e["active"] and e["salary"] >= 80000, employees )) print("\nSenior active employees:") for e in senior_active: print(f" {e['name']} ₹{e['salary']}") # PATTERN 4 — Pipeline: filter → map → sort (chained) pipeline_result = sorted( map( lambda e: {**e, "band":"Senior" if e["salary"]>=80000 else "Mid"}, filter(lambda e: e["active"], employees) ), key=lambda e: e["salary"], reverse=True ) print("\nActive employees ranked by salary:") for e in pipeline_result: print(f" {e['name']:8} ₹{e['salary']:>8,} [{e['band']}]")
+# PATTERN 1 — Column transformation with map+lambda 
+raw_salaries = ["75,000", "88,000", " 52000 ", "91,000"]
+clean_sal = list(map( lambda s: float(s.strip().replace(",","")), raw_salaries )) 
+print(clean_sal) # [75000.0, 88000.0, 52000.0, 91000.0] 
+
+# PATTERN 2 — Derived column using map+lambda 
+
+records = [ {"name":"Ravi", "salary":75000}, {"name":"Priya", "salary":88000}, {"name":"Ankit", "salary":52000}, ] 
+
+# Add bonus column to every record 
+with_bonus = list(map( lambda r: {**r, "bonus": round(r["salary"]*0.1,2)}, records )) 
+for r in with_bonus: 
+    print(f"{r['name']:8} salary=₹{r['salary']} bonus=₹{r['bonus']}") 
+
+# PATTERN 3 — Filter active + high earners 
+employees = [ {"name":"Ravi", "salary":75000, "active":True}, {"name":"Priya", "salary":88000, "active":True}, {"name":"Ankit", "salary":52000, "active":False}, {"name":"Neha", "salary":91000, "active":True}, ] 
+senior_active = list(filter( lambda e: e["active"] and e["salary"] >= 80000, employees )) 
+print("\nSenior active employees:") 
+
+for e in senior_active: 
+    print(f" {e['name']} ₹{e['salary']}") 
+    
+    
+# PATTERN 4 — Pipeline: filter → map → sort (chained) 
+
+pipeline_result = sorted( map( lambda e: {**e, "band":"Senior" if e["salary"]>=80000 else "Mid"}, filter(lambda e: e["active"], employees) ), key=lambda e: e["salary"], reverse=True ) 
+print("\nActive employees ranked by salary:") 
+for e in pipeline_result: 
+    print(f" {e['name']:8} ₹{e['salary']:>8,} [{e['band']}]")
 
 
-Lambda is a tool — not always the right one. Knowing when to use lambda vs a regular function is what separates readable code from clever code nobody can maintain.
+# Lambda is a tool — not always the right one. Knowing when to use lambda vs a regular function is what separates readable code from clever code nobody can maintain.
 
-Copy--- ✅ USE LAMBDA — short, inline, used once --- # Good: simple key for sorted() sorted_emps = sorted(employees, key=lambda e: e["salary"]) # Good: quick transformation in map() bonuses = list(map(lambda s: s * 0.1, salaries)) # Good: simple filter condition active = list(filter(lambda e: e["active"], employees)) --- ❌ USE DEF INSTEAD — complex logic, reused, needs docstring --- # Bad: lambda too complex to read process = lambda r: {"id":int(r["id"]),"name":r["name"].strip().title(),"sal":float(r["salary"]),"bonus":round(float(r["salary"])*0.1,2)} # ✅ Much better as a def def process_record(r): """Cast and clean a raw employee record.""" sal = float(r["salary"]) return { "id" : int(r["id"]), "name" : r["name"].strip().title(), "sal" : sal, "bonus": round(sal * 0.1, 2), }
+#Copy--- ✅ USE LAMBDA — short, inline, used once --- # Good: simple key for sorted() 
+
+sorted_emps = sorted(employees, key=lambda e: e["salary"]) #Good: quick transformation in map() 
+
+bonuses = list(map(lambda s: s * 0.1, salaries)) # Good: simple filter condition 
+
+active = list(filter(lambda e: e["active"], employees)) 
+#
+# --- ❌ USE DEF INSTEAD — complex logic, reused, needs docstring --- # Bad: lambda too complex to read 
+# 
+
+process = lambda r: {"id":int(r["id"]),"name":r["name"].strip().title(),"sal":float(r["salary"]),"bonus":round(float(r["salary"])*0.1,2)} 
+
+# ✅ Much better as a def 
+def process_record(r): 
+    """Cast and clean a raw employee record.""" 
+    sal = float(r["salary"]) 
+    return { "id" : int(r["id"]), "name" : r["name"].strip().title(), "sal" : sal, "bonus": round(sal * 0.1, 2), }
+
+'''
 The decision rule — lambda or def?
 Lambda
 → fits on one short line + used in one place + no explanation needed
@@ -254,4 +301,4 @@ sorted(key=...)
 and simple
 map/filter
 ✗
-Never assign a lambda to a variable and reuse it everywhere — just write a def
+Never assign a lambda to a variable and reuse it everywhere — just write a def'''
