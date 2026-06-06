@@ -113,3 +113,10 @@ square3 = [i*i for i in x if i%2 ==0]
 
 print(square2)
 print(square3)
+
+print("**************************************")
+x = [[1,2,3],[4,5,6],[7,8,9]]
+
+for i in x:
+    for j in i:
+        print(i)
