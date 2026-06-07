@@ -1,0 +1,360 @@
+
+<style>
+  .roadmap { padding: 1rem 0; font-family: var(--font-sans); }
+  .header-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2rem; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .phase { margin-bottom: 1.5rem; border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); overflow: hidden; }
+  .phase-header { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.25rem; cursor: pointer; user-select: none; }
+  .phase-badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+  .phase-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .phase-meta { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+  .phase-arrow { font-size: 13px; color: var(--color-text-tertiary); transition: transform 0.2s; }
+  .phase-body { border-top: 0.5px solid var(--color-border-tertiary); }
+  .week { padding: 0.75rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .week:last-child { border-bottom: none; }
+  .week-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .week-days { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .day-tag { display: inline-block; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; font-size: 11px; padding: 1px 6px; margin: 2px 2px 2px 0; color: var(--color-text-primary); }
+  .tip-box { background: var(--color-background-secondary); border-left: 3px solid #1D9E75; padding: 0.75rem 1rem; margin: 1rem 1.25rem; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; font-size: 13px; color: var(--color-text-secondary); }
+  .start-btn { display: inline-block; margin: 1.5rem 0 0.5rem; padding: 10px 22px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; cursor: pointer; color: var(--color-text-primary); }
+  .start-btn:hover { background: var(--color-background-secondary); }
+  .collapsed .phase-body { display: none; }
+  .collapsed .phase-arrow { transform: rotate(-90deg); }
+</style>
+<div class="roadmap">
+  <h2 class="sr-only">6-month Data Engineering learning roadmap for beginners targeting IT services jobs in India</h2>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">months</div></div>
+    <div class="stat"><div class="stat-num">24</div><div class="stat-label">weeks</div></div>
+    <div class="stat"><div class="stat-num">~90</div><div class="stat-label">mins/day</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">phases</div></div>
+  </div>
+
+  <div class="phase" id="p1">
+    <div class="phase-header" onclick="toggle('p1')">
+      <span class="phase-badge" style="background:#E1F5EE;color:#0F6E56;">Phase 1</span>
+      <span class="phase-title">Python + SQL Foundations</span>
+      <span class="phase-meta">Weeks 1–6</span>
+      <span class="phase-arrow">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="week">
+        <div class="week-title">Week 1 — Python basics</div>
+        <div class="week-days">
+          <span class="day-tag">Day 1</span> Install Python + VS Code, write first program<br>
+          <span class="day-tag">Day 2</span> Variables, data types, comments<br>
+          <span class="day-tag">Day 3</span> Numbers, strings, casting<br>
+          <span class="day-tag">Day 4</span> Booleans, operators<br>
+          <span class="day-tag">Day 5</span> Lists and tuples<br>
+          <span class="day-tag">Day 6</span> Sets and dictionaries<br>
+          <span class="day-tag">Day 7</span> Practice day — mini exercises
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 2 — Python control flow</div>
+        <div class="week-days">
+          <span class="day-tag">Day 8</span> If-Else conditions<br>
+          <span class="day-tag">Day 9</span> While loops<br>
+          <span class="day-tag">Day 10</span> For loops<br>
+          <span class="day-tag">Day 11</span> Functions<br>
+          <span class="day-tag">Day 12</span> Lambda functions<br>
+          <span class="day-tag">Day 13</span> Try-Except, file handling<br>
+          <span class="day-tag">Day 14</span> Practice — build a simple calculator
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 3 — Python advanced</div>
+        <div class="week-days">
+          <span class="day-tag">Day 15</span> Arrays, classes & objects<br>
+          <span class="day-tag">Day 16</span> Inheritance, polymorphism<br>
+          <span class="day-tag">Day 17</span> Iterators, scope, modules<br>
+          <span class="day-tag">Day 18</span> JSON handling, RegEx basics<br>
+          <span class="day-tag">Day 19</span> PIP, installing libraries<br>
+          <span class="day-tag">Day 20</span> Math & date modules<br>
+          <span class="day-tag">Day 21</span> Practice — JSON file reader project
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 4 — Pandas</div>
+        <div class="week-days">
+          <span class="day-tag">Day 22</span> Intro to Pandas, Series & DataFrames<br>
+          <span class="day-tag">Day 23</span> Read CSV, Read JSON<br>
+          <span class="day-tag">Day 24</span> Analyze & clean data<br>
+          <span class="day-tag">Day 25</span> Handling empty cells, wrong formats<br>
+          <span class="day-tag">Day 26</span> Removing duplicates<br>
+          <span class="day-tag">Day 27</span> Correlations + basic plotting<br>
+          <span class="day-tag">Day 28</span> Mini project — clean a real CSV dataset
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 5 — SQL fundamentals</div>
+        <div class="week-days">
+          <span class="day-tag">Day 29</span> Install MySQL/PostgreSQL, first queries<br>
+          <span class="day-tag">Day 30</span> SELECT, WHERE, ORDER BY<br>
+          <span class="day-tag">Day 31</span> INSERT, UPDATE, DELETE<br>
+          <span class="day-tag">Day 32</span> NULL values, TOP, MIN/MAX<br>
+          <span class="day-tag">Day 33</span> COUNT, SUM, AVG, LIKE, Wildcards<br>
+          <span class="day-tag">Day 34</span> IN, BETWEEN, Aliases<br>
+          <span class="day-tag">Day 35</span> Practice — 10 SQL query challenges
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 6 — SQL advanced</div>
+        <div class="week-days">
+          <span class="day-tag">Day 36</span> JOINS — INNER, LEFT, RIGHT<br>
+          <span class="day-tag">Day 37</span> Self JOIN, GROUP BY, HAVING<br>
+          <span class="day-tag">Day 38</span> EXISTS, CASE statements<br>
+          <span class="day-tag">Day 39</span> Stored procedures, operators<br>
+          <span class="day-tag">Day 40</span> CREATE/DROP DB & Tables, ALTER<br>
+          <span class="day-tag">Day 41</span> Primary key, Foreign key, Views<br>
+          <span class="day-tag">Day 42</span> Phase 1 mini project — Employee DB queries
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong style="color:var(--color-text-primary)">Phase 1 goal:</strong> You should be able to write Python scripts and SQL queries confidently. This is tested in every IT services interview.
+      </div>
+    </div>
+  </div>
+
+  <div class="phase collapsed" id="p2">
+    <div class="phase-header" onclick="toggle('p2')">
+      <span class="phase-badge" style="background:#EEEDFE;color:#3C3489;">Phase 2</span>
+      <span class="phase-title">Apache Spark + PySpark</span>
+      <span class="phase-meta">Weeks 7–12</span>
+      <span class="phase-arrow">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="week">
+        <div class="week-title">Week 7 — PySpark setup + fundamentals</div>
+        <div class="week-days">
+          <span class="day-tag">Day 43</span> What is Spark? Architecture, cluster managers<br>
+          <span class="day-tag">Day 44</span> Install PySpark locally (Google Colab recommended)<br>
+          <span class="day-tag">Day 45</span> SparkSession, SparkContext<br>
+          <span class="day-tag">Day 46</span> RDDs — create, parallelize<br>
+          <span class="day-tag">Day 47</span> Repartition, Coalesce<br>
+          <span class="day-tag">Day 48</span> Broadcast variables, Accumulators<br>
+          <span class="day-tag">Day 49</span> Practice — RDD operations
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 8 — PySpark DataFrames</div>
+        <div class="week-days">
+          <span class="day-tag">Day 50</span> Create DataFrame, convert RDD to DF<br>
+          <span class="day-tag">Day 51</span> StructType, StructField, Column class<br>
+          <span class="day-tag">Day 52</span> show(), select(), collect()<br>
+          <span class="day-tag">Day 53</span> withColumn(), withColumnRenamed()<br>
+          <span class="day-tag">Day 54</span> where(), filter(), drop()<br>
+          <span class="day-tag">Day 55</span> dropDuplicates(), orderBy(), sort()<br>
+          <span class="day-tag">Day 56</span> Practice — transform a sample dataset
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 9 — Advanced DataFrame operations</div>
+        <div class="week-days">
+          <span class="day-tag">Day 57</span> groupBy(), aggregations<br>
+          <span class="day-tag">Day 58</span> join() — all join types<br>
+          <span class="day-tag">Day 59</span> union(), unionAll(), unionByName()<br>
+          <span class="day-tag">Day 60</span> UDFs (User Defined Functions)<br>
+          <span class="day-tag">Day 61</span> map(), flatMap(), foreach()<br>
+          <span class="day-tag">Day 62</span> transform(), apply()<br>
+          <span class="day-tag">Day 63</span> Practice — complex transformations
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 10 — PySpark SQL functions</div>
+        <div class="week-days">
+          <span class="day-tag">Day 64</span> Aggregate functions<br>
+          <span class="day-tag">Day 65</span> Window functions (rank, lag, lead)<br>
+          <span class="day-tag">Day 66</span> Date & timestamp functions<br>
+          <span class="day-tag">Day 67</span> JSON functions<br>
+          <span class="day-tag">Day 68</span> fillna(), fill(), pivot()<br>
+          <span class="day-tag">Day 69</span> partitionBy(), MapType, sample()<br>
+          <span class="day-tag">Day 70</span> Practice — SQL functions on real data
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 11 — Revision + interview prep</div>
+        <div class="week-days">
+          <span class="day-tag">Day 71–77</span> Revise all PySpark topics, solve 20 practice questions, write PySpark scripts from scratch without reference
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 12 — Phase 2 project</div>
+        <div class="week-days">
+          <span class="day-tag">Day 78–84</span> Build a sales data pipeline using PySpark — read CSV → clean → transform → aggregate → write output. Upload to GitHub.
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong style="color:var(--color-text-primary)">Phase 2 goal:</strong> PySpark + SQL is the single most tested combination in data engineering interviews at TCS, Infosys, Wipro. Master this phase thoroughly.
+      </div>
+    </div>
+  </div>
+
+  <div class="phase collapsed" id="p3">
+    <div class="phase-header" onclick="toggle('p3')">
+      <span class="phase-badge" style="background:#FAEEDA;color:#633806;">Phase 3</span>
+      <span class="phase-title">Databricks + Delta Lake + ETL</span>
+      <span class="phase-meta">Weeks 13–18</span>
+      <span class="phase-arrow">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="week">
+        <div class="week-title">Week 13 — Databricks basics</div>
+        <div class="week-days">
+          <span class="day-tag">Day 85</span> Create free Databricks community account<br>
+          <span class="day-tag">Day 86</span> Workspace, clusters, notebooks<br>
+          <span class="day-tag">Day 87</span> DBFS — Databricks File System<br>
+          <span class="day-tag">Day 88</span> Interactive vs job clusters<br>
+          <span class="day-tag">Day 89</span> RDD vs DataFrame vs Dataset<br>
+          <span class="day-tag">Day 90</span> Transformations vs actions<br>
+          <span class="day-tag">Day 91</span> Practice — first Databricks notebook
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 14 — Delta Lake</div>
+        <div class="week-days">
+          <span class="day-tag">Day 92</span> What is Delta Lake? Why it matters<br>
+          <span class="day-tag">Day 93</span> Create, read, write Delta tables<br>
+          <span class="day-tag">Day 94</span> ACID transactions<br>
+          <span class="day-tag">Day 95</span> Schema enforcement & evolution<br>
+          <span class="day-tag">Day 96</span> Time travel — query historical data<br>
+          <span class="day-tag">Day 97</span> OPTIMIZE, Z-ORDER, VACUUM<br>
+          <span class="day-tag">Day 98</span> Practice — Delta Lake CRUD operations
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 15 — ETL pipelines</div>
+        <div class="week-days">
+          <span class="day-tag">Day 99</span> Medallion architecture — Bronze/Silver/Gold<br>
+          <span class="day-tag">Day 100</span> Build Bronze layer — raw ingestion<br>
+          <span class="day-tag">Day 101</span> Build Silver layer — clean & validate<br>
+          <span class="day-tag">Day 102</span> Build Gold layer — aggregations<br>
+          <span class="day-tag">Day 103</span> Handling SCDs (slowly changing dimensions)<br>
+          <span class="day-tag">Day 104</span> Error handling & retries in pipelines<br>
+          <span class="day-tag">Day 105</span> Practice — end-to-end Bronze→Gold pipeline
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 16 — Data ingestion + streaming basics</div>
+        <div class="week-days">
+          <span class="day-tag">Day 106</span> Read CSV, JSON, Parquet in Databricks<br>
+          <span class="day-tag">Day 107</span> Managed vs external tables<br>
+          <span class="day-tag">Day 108</span> Autoloader (cloudFiles)<br>
+          <span class="day-tag">Day 109</span> SQL queries and dashboards in Databricks<br>
+          <span class="day-tag">Day 110</span> Streaming basics — read/write streaming data<br>
+          <span class="day-tag">Day 111</span> Microbatch vs continuous triggers<br>
+          <span class="day-tag">Day 112</span> Checkpointing, streaming with Delta
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 17 — Job scheduling + advanced ops</div>
+        <div class="week-days">
+          <span class="day-tag">Day 113</span> Scheduling notebooks as jobs<br>
+          <span class="day-tag">Day 114</span> Alerts, retries, job run history<br>
+          <span class="day-tag">Day 115</span> MERGE / UPSERT operations<br>
+          <span class="day-tag">Day 116</span> UPDATE and DELETE in Delta<br>
+          <span class="day-tag">Day 117</span> Partitioning & bucketing for performance<br>
+          <span class="day-tag">Day 118</span> Caching & persisting DataFrames<br>
+          <span class="day-tag">Day 119</span> Practice — scheduled pipeline with alerts
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 18 — Phase 3 capstone project</div>
+        <div class="week-days">
+          <span class="day-tag">Day 120–126</span> Full medallion pipeline project: ingest public dataset → Bronze (raw) → Silver (cleaned) → Gold (aggregated) → schedule as Databricks job → document on GitHub with README.
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong style="color:var(--color-text-primary)">Phase 3 goal:</strong> This phase makes you stand out. Most freshers don't have real Databricks experience. Your GitHub project here is your strongest interview asset.
+      </div>
+    </div>
+  </div>
+
+  <div class="phase collapsed" id="p4">
+    <div class="phase-header" onclick="toggle('p4')">
+      <span class="phase-badge" style="background:#FAECE7;color:#712B13;">Phase 4</span>
+      <span class="phase-title">Cloud (AWS + Azure) + Job Prep</span>
+      <span class="phase-meta">Weeks 19–24</span>
+      <span class="phase-arrow">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="week">
+        <div class="week-title">Week 19 — AWS fundamentals</div>
+        <div class="week-days">
+          <span class="day-tag">Day 127</span> Create free AWS account, intro to cloud<br>
+          <span class="day-tag">Day 128</span> EC2 — instances, types, pricing<br>
+          <span class="day-tag">Day 129</span> S3 — buckets, storage, lifecycle<br>
+          <span class="day-tag">Day 130</span> AWS Lambda — serverless basics<br>
+          <span class="day-tag">Day 131</span> RDS + Redshift overview<br>
+          <span class="day-tag">Day 132</span> IAM — users, roles, policies<br>
+          <span class="day-tag">Day 133</span> Practice — upload/read files from S3 with Python
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 20 — Azure fundamentals</div>
+        <div class="week-days">
+          <span class="day-tag">Day 134</span> Create free Azure account, portal overview<br>
+          <span class="day-tag">Day 135</span> Azure regions, resource groups, subscriptions<br>
+          <span class="day-tag">Day 136</span> ADLS Gen2 — Data Lake storage<br>
+          <span class="day-tag">Day 137</span> Azure Data Factory (ADF) — intro & Copy tool<br>
+          <span class="day-tag">Day 138</span> Azure Synapse Analytics overview<br>
+          <span class="day-tag">Day 139</span> Azure AD, RBAC, IAM<br>
+          <span class="day-tag">Day 140</span> Practice — ADF pipeline to copy data
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 21 — Azure data engineering deep dive</div>
+        <div class="week-days">
+          <span class="day-tag">Day 141</span> ADF integration runtime<br>
+          <span class="day-tag">Day 142</span> Linked services, datasets, pipelines in ADF<br>
+          <span class="day-tag">Day 143</span> Dedicated vs serverless SQL pools in Synapse<br>
+          <span class="day-tag">Day 144</span> Azure Databricks + ADLS Gen2 connection<br>
+          <span class="day-tag">Day 145</span> Monitoring with CloudWatch / App Insights<br>
+          <span class="day-tag">Day 146</span> Cost management basics<br>
+          <span class="day-tag">Day 147</span> Practice — end-to-end ADF + Databricks flow
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 22 — Resume + GitHub + LinkedIn</div>
+        <div class="week-days">
+          <span class="day-tag">Day 148</span> Build your GitHub profile — pin 2 projects<br>
+          <span class="day-tag">Day 149</span> Write READMEs for all projects<br>
+          <span class="day-tag">Day 150</span> Build your resume — 1 page, ATS-friendly<br>
+          <span class="day-tag">Day 151</span> Optimize LinkedIn for data engineer roles<br>
+          <span class="day-tag">Day 152</span> Start applying on Naukri, LinkedIn, Indeed<br>
+          <span class="day-tag">Day 153–154</span> Mock interview — Python & SQL questions
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 23 — Interview preparation</div>
+        <div class="week-days">
+          <span class="day-tag">Day 155–157</span> 30 most common Python interview questions<br>
+          <span class="day-tag">Day 158–159</span> 30 most common SQL interview questions<br>
+          <span class="day-tag">Day 160–161</span> PySpark + Databricks + cloud interview Q&amp;A
+        </div>
+      </div>
+      <div class="week">
+        <div class="week-title">Week 24 — Final capstone + apply</div>
+        <div class="week-days">
+          <span class="day-tag">Day 162–168</span> Build final project: full pipeline on AWS/Azure — ingest → process with PySpark → store in Delta → schedule — then apply to 10 companies per week on Naukri + LinkedIn.
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong style="color:var(--color-text-primary)">Phase 4 goal:</strong> Walk into interviews with 2 live GitHub projects, a clean resume, and answers ready for the top 60 interview questions. This is what gets you hired.
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; padding: 0.5rem 0 1rem;">
+    <button class="start-btn" onclick="sendPrompt('Teach me Day 1: Install Python and VS Code and write my first program. I am a complete beginner.')">Start Day 1 now ↗</button>
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('collapsed');
+}
+</script>

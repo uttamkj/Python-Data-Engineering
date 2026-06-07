@@ -1,0 +1,569 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.tabs{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:8px 18px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-size:14px;font-weight:500;transition:all .15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.section{display:none}.section.active{display:block}
+.schema-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:1.5rem}
+.table-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
+.table-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.col{font-size:12px;color:var(--color-text-secondary);padding:2px 0;display:flex;align-items:center;gap:6px}
+.pk{font-size:10px;background:#FAC775;color:#633806;border-radius:3px;padding:1px 4px;font-weight:500}
+.fk{font-size:10px;background:#B5D4F4;color:#0C447C;border-radius:3px;padding:1px 4px;font-weight:500}
+.dtype{font-size:10px;color:var(--color-text-tertiary);margin-left:auto}
+.exercise-list{display:flex;flex-direction:column;gap:8px}
+.ex{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;cursor:pointer;transition:border-color .15s}
+.ex:hover{border-color:var(--color-border-secondary)}
+.ex-header{display:flex;align-items:center;gap:10px}
+.badge{font-size:11px;padding:3px 9px;border-radius:var(--border-radius-md);font-weight:500;white-space:nowrap}
+.b-basic{background:#EAF3DE;color:#27500A}
+.b-inter{background:#E6F1FB;color:#0C447C}
+.b-adv{background:#FAEEDA;color:#633806}
+.b-expert{background:#FAECE7;color:#712B13}
+.ex-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.ex-body{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary)}
+.ex.open .ex-body{display:block}
+.hint{font-size:13px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.6}
+pre{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;font-size:12px;font-family:var(--font-mono);overflow-x:auto;color:var(--color-text-primary);line-height:1.6;white-space:pre-wrap}
+.ask-btn{margin-top:10px;padding:6px 14px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.ask-btn:hover{background:var(--color-background-secondary)}
+.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem}
+.db-toggle{display:flex;gap:8px;margin-bottom:1.25rem}
+.dbt{padding:6px 14px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.dbt.sel{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.filter-btn.on{border-color:var(--color-border-primary);color:var(--color-text-primary);background:var(--color-background-secondary)}
+.setup-box{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
+.setup-box p{font-size:13px;color:var(--color-text-secondary);margin-bottom:8px;line-height:1.5}
+</style>
+
+<h2 class="sr-only">SQL Practice Hub — E-commerce and Banking databases with exercises from basic to expert level</h2>
+
+<div style="padding:1rem 0">
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('schema')"><i class="ti ti-table" aria-hidden="true"></i> Schema</button>
+  <button class="tab" onclick="switchTab('exercises')"><i class="ti ti-code" aria-hidden="true"></i> Exercises</button>
+  <button class="tab" onclick="switchTab('setup')"><i class="ti ti-terminal" aria-hidden="true"></i> Setup SQL</button>
+</div>
+
+<div id="schema" class="section active">
+  <div class="db-toggle">
+    <button class="dbt sel" onclick="switchDB('ecom',this)"><i class="ti ti-shopping-cart" aria-hidden="true"></i> E-commerce</button>
+    <button class="dbt" onclick="switchDB('bank',this)"><i class="ti ti-building-bank" aria-hidden="true"></i> Banking</button>
+  </div>
+
+  <div id="ecom-schema">
+    <p class="section-title">E-commerce database — 7 tables</p>
+    <div class="schema-grid">
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-users" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> customers</div>
+        <div class="col"><span class="pk">PK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">name<span class="dtype">VARCHAR</span></div>
+        <div class="col">email<span class="dtype">VARCHAR</span></div>
+        <div class="col">phone<span class="dtype">VARCHAR</span></div>
+        <div class="col">city<span class="dtype">VARCHAR</span></div>
+        <div class="col">state<span class="dtype">VARCHAR</span></div>
+        <div class="col">created_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-category" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> categories</div>
+        <div class="col"><span class="pk">PK</span>category_id<span class="dtype">INT</span></div>
+        <div class="col">name<span class="dtype">VARCHAR</span></div>
+        <div class="col">parent_category_id<span class="dtype">INT</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-package" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> products</div>
+        <div class="col"><span class="pk">PK</span>product_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>category_id<span class="dtype">INT</span></div>
+        <div class="col">name<span class="dtype">VARCHAR</span></div>
+        <div class="col">price<span class="dtype">DECIMAL</span></div>
+        <div class="col">stock_qty<span class="dtype">INT</span></div>
+        <div class="col">brand<span class="dtype">VARCHAR</span></div>
+        <div class="col">is_active<span class="dtype">BOOLEAN</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-receipt" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> orders</div>
+        <div class="col"><span class="pk">PK</span>order_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">order_date<span class="dtype">TIMESTAMP</span></div>
+        <div class="col">status<span class="dtype">ENUM</span></div>
+        <div class="col">total_amount<span class="dtype">DECIMAL</span></div>
+        <div class="col">shipping_city<span class="dtype">VARCHAR</span></div>
+        <div class="col">coupon_code<span class="dtype">VARCHAR</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-list" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> order_items</div>
+        <div class="col"><span class="pk">PK</span>item_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>order_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>product_id<span class="dtype">INT</span></div>
+        <div class="col">quantity<span class="dtype">INT</span></div>
+        <div class="col">unit_price<span class="dtype">DECIMAL</span></div>
+        <div class="col">discount<span class="dtype">DECIMAL</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-star" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> reviews</div>
+        <div class="col"><span class="pk">PK</span>review_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>product_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">rating<span class="dtype">INT(1-5)</span></div>
+        <div class="col">comment<span class="dtype">TEXT</span></div>
+        <div class="col">reviewed_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-truck" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> shipments</div>
+        <div class="col"><span class="pk">PK</span>shipment_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>order_id<span class="dtype">INT</span></div>
+        <div class="col">carrier<span class="dtype">VARCHAR</span></div>
+        <div class="col">tracking_no<span class="dtype">VARCHAR</span></div>
+        <div class="col">shipped_at<span class="dtype">TIMESTAMP</span></div>
+        <div class="col">delivered_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bank-schema" style="display:none">
+    <p class="section-title">Banking database — 7 tables</p>
+    <div class="schema-grid">
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-users" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> customers</div>
+        <div class="col"><span class="pk">PK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">name<span class="dtype">VARCHAR</span></div>
+        <div class="col">dob<span class="dtype">DATE</span></div>
+        <div class="col">email<span class="dtype">VARCHAR</span></div>
+        <div class="col">city<span class="dtype">VARCHAR</span></div>
+        <div class="col">kyc_status<span class="dtype">ENUM</span></div>
+        <div class="col">joined_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-credit-card" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> accounts</div>
+        <div class="col"><span class="pk">PK</span>account_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">account_type<span class="dtype">ENUM</span></div>
+        <div class="col">balance<span class="dtype">DECIMAL</span></div>
+        <div class="col">currency<span class="dtype">CHAR(3)</span></div>
+        <div class="col">status<span class="dtype">ENUM</span></div>
+        <div class="col">opened_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-arrows-exchange" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> transactions</div>
+        <div class="col"><span class="pk">PK</span>txn_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>account_id<span class="dtype">INT</span></div>
+        <div class="col">txn_type<span class="dtype">ENUM</span></div>
+        <div class="col">amount<span class="dtype">DECIMAL</span></div>
+        <div class="col">channel<span class="dtype">ENUM</span></div>
+        <div class="col">status<span class="dtype">ENUM</span></div>
+        <div class="col">txn_at<span class="dtype">TIMESTAMP</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-building" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> branches</div>
+        <div class="col"><span class="pk">PK</span>branch_id<span class="dtype">INT</span></div>
+        <div class="col">name<span class="dtype">VARCHAR</span></div>
+        <div class="col">city<span class="dtype">VARCHAR</span></div>
+        <div class="col">state<span class="dtype">VARCHAR</span></div>
+        <div class="col">manager_id<span class="dtype">INT</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-home" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> loans</div>
+        <div class="col"><span class="pk">PK</span>loan_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>customer_id<span class="dtype">INT</span></div>
+        <div class="col">loan_type<span class="dtype">ENUM</span></div>
+        <div class="col">principal<span class="dtype">DECIMAL</span></div>
+        <div class="col">interest_rate<span class="dtype">DECIMAL</span></div>
+        <div class="col">tenure_months<span class="dtype">INT</span></div>
+        <div class="col">disbursed_at<span class="dtype">TIMESTAMP</span></div>
+        <div class="col">status<span class="dtype">ENUM</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-coin" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> loan_payments</div>
+        <div class="col"><span class="pk">PK</span>payment_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>loan_id<span class="dtype">INT</span></div>
+        <div class="col">amount_paid<span class="dtype">DECIMAL</span></div>
+        <div class="col">payment_date<span class="dtype">DATE</span></div>
+        <div class="col">is_overdue<span class="dtype">BOOLEAN</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-name"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px;color:var(--color-text-secondary)"></i> fraud_flags</div>
+        <div class="col"><span class="pk">PK</span>flag_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>txn_id<span class="dtype">INT</span></div>
+        <div class="col"><span class="fk">FK</span>account_id<span class="dtype">INT</span></div>
+        <div class="col">reason<span class="dtype">VARCHAR</span></div>
+        <div class="col">risk_score<span class="dtype">DECIMAL</span></div>
+        <div class="col">flagged_at<span class="dtype">TIMESTAMP</span></div>
+        <div class="col">resolved<span class="dtype">BOOLEAN</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="exercises" class="section">
+  <div class="db-toggle">
+    <button class="dbt sel" onclick="switchExDB('ecom',this)"><i class="ti ti-shopping-cart" aria-hidden="true"></i> E-commerce</button>
+    <button class="dbt" onclick="switchExDB('bank',this)"><i class="ti ti-building-bank" aria-hidden="true"></i> Banking</button>
+  </div>
+  <div class="filter-row" id="filter-row">
+    <button class="filter-btn on" onclick="toggleFilter('Basic',this)">Basic</button>
+    <button class="filter-btn on" onclick="toggleFilter('Intermediate',this)">Intermediate</button>
+    <button class="filter-btn on" onclick="toggleFilter('Advanced',this)">Advanced</button>
+    <button class="filter-btn on" onclick="toggleFilter('Expert',this)">Expert</button>
+  </div>
+  <div class="exercise-list" id="ex-list"></div>
+</div>
+
+<div id="setup" class="section">
+  <div class="db-toggle">
+    <button class="dbt sel" onclick="switchSetupDB('ecom',this)"><i class="ti ti-shopping-cart" aria-hidden="true"></i> E-commerce</button>
+    <button class="dbt" onclick="switchSetupDB('bank',this)"><i class="ti ti-building-bank" aria-hidden="true"></i> Banking</button>
+  </div>
+  <div id="ecom-setup">
+    <div class="setup-box"><p>Copy and run this in PostgreSQL, MySQL, or SQLite. Sample data is included so you can query immediately.</p></div>
+    <pre>-- ============================================
+-- E-COMMERCE DATABASE SETUP
+-- Compatible with PostgreSQL / MySQL / SQLite
+-- ============================================
+
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY,
+  name        VARCHAR(100),
+  email       VARCHAR(150) UNIQUE,
+  phone       VARCHAR(20),
+  city        VARCHAR(80),
+  state       VARCHAR(50),
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  category_id        INT PRIMARY KEY,
+  name               VARCHAR(100),
+  parent_category_id INT REFERENCES categories(category_id)
+);
+
+CREATE TABLE products (
+  product_id  INT PRIMARY KEY,
+  category_id INT REFERENCES categories(category_id),
+  name        VARCHAR(200),
+  price       DECIMAL(10,2),
+  stock_qty   INT DEFAULT 0,
+  brand       VARCHAR(100),
+  is_active   BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE orders (
+  order_id      INT PRIMARY KEY,
+  customer_id   INT REFERENCES customers(customer_id),
+  order_date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status        VARCHAR(20) CHECK (status IN ('pending','confirmed','shipped','delivered','cancelled')),
+  total_amount  DECIMAL(12,2),
+  shipping_city VARCHAR(80),
+  coupon_code   VARCHAR(30)
+);
+
+CREATE TABLE order_items (
+  item_id    INT PRIMARY KEY,
+  order_id   INT REFERENCES orders(order_id),
+  product_id INT REFERENCES products(product_id),
+  quantity   INT,
+  unit_price DECIMAL(10,2),
+  discount   DECIMAL(5,2) DEFAULT 0
+);
+
+CREATE TABLE reviews (
+  review_id   INT PRIMARY KEY,
+  product_id  INT REFERENCES products(product_id),
+  customer_id INT REFERENCES customers(customer_id),
+  rating      INT CHECK (rating BETWEEN 1 AND 5),
+  comment     TEXT,
+  reviewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE shipments (
+  shipment_id INT PRIMARY KEY,
+  order_id    INT REFERENCES orders(order_id),
+  carrier     VARCHAR(80),
+  tracking_no VARCHAR(100),
+  shipped_at  TIMESTAMP,
+  delivered_at TIMESTAMP
+);
+
+-- ============ SAMPLE DATA ============
+INSERT INTO customers VALUES
+(1,'Priya Sharma','priya@gmail.com','9876543210','Bengaluru','Karnataka','2023-01-15 10:00:00'),
+(2,'Rahul Mehta','rahul@gmail.com','9123456789','Mumbai','Maharashtra','2023-02-20 11:30:00'),
+(3,'Anita Roy','anita@gmail.com','9988776655','Delhi','Delhi','2023-03-10 09:00:00'),
+(4,'Karthik N','karthik@gmail.com','9765432100','Chennai','Tamil Nadu','2023-04-05 14:00:00'),
+(5,'Meena Pillai','meena@gmail.com','9654321087','Kochi','Kerala','2023-05-18 16:00:00');
+
+INSERT INTO categories VALUES
+(1,'Electronics',NULL),(2,'Clothing',NULL),(3,'Books',NULL),
+(4,'Mobiles',1),(5,'Laptops',1),(6,'Men''s Wear',2),(7,'Women''s Wear',2);
+
+INSERT INTO products VALUES
+(1,4,'iPhone 15',79999.00,50,'Apple',TRUE),
+(2,4,'Samsung Galaxy S24',69999.00,80,'Samsung',TRUE),
+(3,5,'MacBook Air M2',119999.00,30,'Apple',TRUE),
+(4,5,'Dell XPS 15',95000.00,20,'Dell',TRUE),
+(5,6,'Men''s Polo T-Shirt',799.00,500,'Nike',TRUE),
+(6,7,'Women''s Kurti',1299.00,300,'Biba',TRUE),
+(7,3,'Clean Code (Book)',499.00,200,'Robert C. Martin',TRUE),
+(8,3,'Designing Data-Intensive Apps',799.00,150,'O''Reilly',TRUE);
+
+INSERT INTO orders VALUES
+(101,1,'2024-01-10 10:00:00','delivered',79999.00,'Bengaluru',NULL),
+(102,2,'2024-01-15 11:00:00','delivered',69999.00,'Mumbai','SAVE10'),
+(103,1,'2024-02-01 09:00:00','shipped',119999.00,'Bengaluru',NULL),
+(104,3,'2024-02-10 14:00:00','cancelled',799.00,'Delhi',NULL),
+(105,4,'2024-03-05 10:00:00','delivered',95799.00,'Chennai',NULL),
+(106,5,'2024-03-20 16:00:00','delivered',1298.00,'Kochi','FLAT50'),
+(107,2,'2024-04-01 08:00:00','pending',499.00,'Mumbai',NULL),
+(108,1,'2024-04-15 12:00:00','delivered',1598.00,'Bengaluru',NULL);
+
+INSERT INTO order_items VALUES
+(1,101,1,1,79999.00,0),(2,102,2,1,69999.00,0),
+(3,103,3,1,119999.00,0),(4,104,7,1,799.00,0),
+(5,105,4,1,95000.00,0),(6,105,5,1,799.00,0),
+(7,106,6,1,1299.00,1.00),(8,107,7,1,499.00,0),
+(9,108,5,1,799.00,0),(10,108,6,1,799.00,0);
+
+INSERT INTO reviews VALUES
+(1,1,1,5,'Excellent phone!','2024-01-20 10:00:00'),
+(2,2,2,4,'Good value for money','2024-01-25 11:00:00'),
+(3,4,4,5,'Amazing laptop','2024-03-15 09:00:00'),
+(4,5,5,3,'Average quality','2024-04-01 10:00:00'),
+(5,7,3,5,'Must read!','2024-02-15 08:00:00');
+
+INSERT INTO shipments VALUES
+(1,101,'BlueDart','BD123456','2024-01-11 08:00:00','2024-01-13 18:00:00'),
+(2,102,'Delhivery','DL789012','2024-01-16 09:00:00','2024-01-19 17:00:00'),
+(3,103,'FedEx','FX345678','2024-02-02 10:00:00',NULL),
+(4,105,'BlueDart','BD901234','2024-03-06 08:00:00','2024-03-09 16:00:00'),
+(5,106,'Delhivery','DL567890','2024-03-21 09:00:00','2024-03-24 15:00:00'),
+(6,108,'DTDC','DT234567','2024-04-16 10:00:00','2024-04-19 14:00:00');</pre>
+    <button class="ask-btn" onclick="sendPrompt('Generate more sample data for the ecommerce database — add 20 more customers, 50 more orders, and make it realistic for an Indian ecommerce context')">Generate more sample data ↗</button>
+  </div>
+  <div id="bank-setup" style="display:none">
+    <div class="setup-box"><p>Copy and run this in PostgreSQL, MySQL, or SQLite to set up the banking database with sample data.</p></div>
+    <pre>-- ============================================
+-- BANKING DATABASE SETUP
+-- Compatible with PostgreSQL / MySQL / SQLite
+-- ============================================
+
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY,
+  name        VARCHAR(100),
+  dob         DATE,
+  email       VARCHAR(150) UNIQUE,
+  city        VARCHAR(80),
+  kyc_status  VARCHAR(20) CHECK (kyc_status IN ('pending','verified','rejected')),
+  joined_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE branches (
+  branch_id  INT PRIMARY KEY,
+  name       VARCHAR(100),
+  city       VARCHAR(80),
+  state      VARCHAR(50),
+  manager_id INT
+);
+
+CREATE TABLE accounts (
+  account_id   INT PRIMARY KEY,
+  customer_id  INT REFERENCES customers(customer_id),
+  account_type VARCHAR(20) CHECK (account_type IN ('savings','current','fd','rd')),
+  balance      DECIMAL(15,2) DEFAULT 0,
+  currency     CHAR(3) DEFAULT 'INR',
+  status       VARCHAR(20) CHECK (status IN ('active','frozen','closed')),
+  opened_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transactions (
+  txn_id     INT PRIMARY KEY,
+  account_id INT REFERENCES accounts(account_id),
+  txn_type   VARCHAR(20) CHECK (txn_type IN ('credit','debit')),
+  amount     DECIMAL(12,2),
+  channel    VARCHAR(20) CHECK (channel IN ('atm','upi','neft','imps','branch','online')),
+  status     VARCHAR(20) CHECK (status IN ('success','failed','pending')),
+  txn_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE loans (
+  loan_id       INT PRIMARY KEY,
+  customer_id   INT REFERENCES customers(customer_id),
+  loan_type     VARCHAR(30) CHECK (loan_type IN ('home','personal','vehicle','education')),
+  principal     DECIMAL(15,2),
+  interest_rate DECIMAL(5,2),
+  tenure_months INT,
+  disbursed_at  TIMESTAMP,
+  status        VARCHAR(20) CHECK (status IN ('active','closed','defaulted'))
+);
+
+CREATE TABLE loan_payments (
+  payment_id   INT PRIMARY KEY,
+  loan_id      INT REFERENCES loans(loan_id),
+  amount_paid  DECIMAL(12,2),
+  payment_date DATE,
+  is_overdue   BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE fraud_flags (
+  flag_id    INT PRIMARY KEY,
+  txn_id     INT REFERENCES transactions(txn_id),
+  account_id INT REFERENCES accounts(account_id),
+  reason     VARCHAR(200),
+  risk_score DECIMAL(4,2),
+  flagged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  resolved   BOOLEAN DEFAULT FALSE
+);
+
+-- ============ SAMPLE DATA ============
+INSERT INTO customers VALUES
+(1,'Arjun Verma','1985-06-15','arjun@gmail.com','Mumbai','verified','2020-01-10 09:00:00'),
+(2,'Sunita Rao','1990-03-22','sunita@gmail.com','Bengaluru','verified','2020-03-15 10:00:00'),
+(3,'Manoj Kumar','1978-11-08','manoj@gmail.com','Delhi','verified','2019-07-20 11:00:00'),
+(4,'Deepa Nair','1995-08-30','deepa@gmail.com','Kochi','pending','2022-06-01 14:00:00'),
+(5,'Ravi Shankar','1982-02-14','ravi@gmail.com','Chennai','verified','2018-12-05 09:00:00');
+
+INSERT INTO branches VALUES
+(1,'MG Road Branch','Bengaluru','Karnataka',101),
+(2,'Andheri Branch','Mumbai','Maharashtra',102),
+(3,'CP Branch','Delhi','Delhi',103);
+
+INSERT INTO accounts VALUES
+(1001,1,'savings',85000.00,'INR','active','2020-01-10 09:00:00'),
+(1002,1,'current',250000.00,'INR','active','2020-01-10 09:30:00'),
+(1003,2,'savings',120000.00,'INR','active','2020-03-15 10:00:00'),
+(1004,3,'savings',15000.00,'INR','frozen','2019-07-20 11:00:00'),
+(1005,4,'savings',45000.00,'INR','active','2022-06-01 14:00:00'),
+(1006,5,'fd',500000.00,'INR','active','2018-12-05 09:00:00'),
+(1007,5,'savings',30000.00,'INR','active','2021-05-10 10:00:00');
+
+INSERT INTO transactions VALUES
+(1,1001,'debit',5000.00,'upi','success','2024-01-05 10:00:00'),
+(2,1001,'credit',15000.00,'neft','success','2024-01-10 11:00:00'),
+(3,1001,'debit',2500.00,'atm','success','2024-01-15 08:00:00'),
+(4,1002,'debit',50000.00,'imps','success','2024-01-20 14:00:00'),
+(5,1003,'credit',30000.00,'online','success','2024-01-22 09:00:00'),
+(6,1003,'debit',8000.00,'upi','success','2024-02-01 10:00:00'),
+(7,1004,'debit',100000.00,'online','failed','2024-02-05 23:00:00'),
+(8,1005,'credit',10000.00,'branch','success','2024-02-10 11:00:00'),
+(9,1007,'debit',25000.00,'neft','success','2024-02-15 14:00:00'),
+(10,1001,'debit',200000.00,'online','success','2024-03-01 02:00:00'),
+(11,1003,'credit',50000.00,'neft','success','2024-03-05 10:00:00'),
+(12,1005,'debit',3000.00,'upi','success','2024-03-10 12:00:00');
+
+INSERT INTO loans VALUES
+(1,1,'home',5000000.00,8.50,240,'2020-06-01 10:00:00','active'),
+(2,2,'personal',300000.00,12.00,36,'2021-09-15 11:00:00','active'),
+(3,3,'vehicle',800000.00,9.00,60,'2019-11-01 09:00:00','active'),
+(4,5,'education',600000.00,10.50,48,'2018-08-01 10:00:00','closed'),
+(5,4,'personal',100000.00,14.00,24,'2022-09-01 14:00:00','defaulted');
+
+INSERT INTO loan_payments VALUES
+(1,1,45000.00,'2024-01-01',FALSE),(2,1,45000.00,'2024-02-01',FALSE),
+(3,2,9500.00,'2024-01-05',FALSE),(4,2,9500.00,'2024-02-05',FALSE),
+(5,3,16000.00,'2024-01-10',FALSE),(6,5,5000.00,'2024-01-15',TRUE),
+(7,1,45000.00,'2024-03-01',FALSE),(8,2,9500.00,'2024-03-05',TRUE);
+
+INSERT INTO fraud_flags VALUES
+(1,7,1004,'Unusually large night-time transaction',87.50,'2024-02-05 23:05:00',TRUE),
+(2,10,1001,'Large unusual transfer at 2AM',92.00,'2024-03-01 02:05:00',FALSE);</pre>
+    <button class="ask-btn" onclick="sendPrompt('Generate more realistic sample data for the banking database — add 20 more customers, 100 more transactions, and more loans. Make it realistic for an Indian bank.')">Generate more sample data ↗</button>
+  </div>
+</div>
+</div>
+
+<script>
+const ecomExercises=[
+  {level:'Basic',badge:'b-basic',title:'List all customers from Karnataka',hint:'Filter rows using WHERE on the state column.',sql:`SELECT * FROM customers\nWHERE state = 'Karnataka';`},
+  {level:'Basic',badge:'b-basic',title:'Find all delivered orders',hint:'Use WHERE with the status column in the orders table.',sql:`SELECT * FROM orders\nWHERE status = 'delivered';`},
+  {level:'Basic',badge:'b-basic',title:'Count total number of products per category',hint:'Use GROUP BY with COUNT.',sql:`SELECT category_id, COUNT(*) AS product_count\nFROM products\nGROUP BY category_id;`},
+  {level:'Basic',badge:'b-basic',title:'Find products with price above ₹50,000',hint:'Simple WHERE with a numeric comparison.',sql:`SELECT name, price, brand\nFROM products\nWHERE price > 50000\nORDER BY price DESC;`},
+  {level:'Basic',badge:'b-basic',title:'List orders that used a coupon',hint:'Use IS NOT NULL to find rows where coupon_code exists.',sql:`SELECT order_id, customer_id, total_amount, coupon_code\nFROM orders\nWHERE coupon_code IS NOT NULL;`},
+  {level:'Intermediate',badge:'b-inter',title:'Total revenue per customer',hint:'JOIN orders to customers, GROUP BY customer, SUM total_amount.',sql:`SELECT c.name, SUM(o.total_amount) AS total_spent\nFROM customers c\nJOIN orders o ON c.customer_id = o.customer_id\nWHERE o.status != 'cancelled'\nGROUP BY c.customer_id, c.name\nORDER BY total_spent DESC;`},
+  {level:'Intermediate',badge:'b-inter',title:'Top 3 best-selling products by quantity',hint:'SUM quantity from order_items, join products for names.',sql:`SELECT p.name, SUM(oi.quantity) AS total_sold\nFROM order_items oi\nJOIN products p ON oi.product_id = p.product_id\nGROUP BY p.product_id, p.name\nORDER BY total_sold DESC\nLIMIT 3;`},
+  {level:'Intermediate',badge:'b-inter',title:'Average product rating per category',hint:'JOIN reviews → products → categories, then AVG(rating).',sql:`SELECT cat.name AS category, ROUND(AVG(r.rating),2) AS avg_rating\nFROM reviews r\nJOIN products p ON r.product_id = p.product_id\nJOIN categories cat ON p.category_id = cat.category_id\nGROUP BY cat.category_id, cat.name\nORDER BY avg_rating DESC;`},
+  {level:'Intermediate',badge:'b-inter',title:'Customers who never placed an order',hint:'Use LEFT JOIN and filter WHERE order_id IS NULL.',sql:`SELECT c.customer_id, c.name, c.email\nFROM customers c\nLEFT JOIN orders o ON c.customer_id = o.customer_id\nWHERE o.order_id IS NULL;`},
+  {level:'Intermediate',badge:'b-inter',title:'Monthly revenue trend in 2024',hint:'Extract month from order_date, SUM total_amount, GROUP BY month.',sql:`SELECT\n  EXTRACT(MONTH FROM order_date) AS month,\n  SUM(total_amount) AS revenue\nFROM orders\nWHERE EXTRACT(YEAR FROM order_date) = 2024\n  AND status != 'cancelled'\nGROUP BY month\nORDER BY month;`},
+  {level:'Advanced',badge:'b-adv',title:'Customer lifetime value (LTV) with order count and avg order size',hint:'Combine SUM, COUNT, AVG in one GROUP BY query with a JOIN.',sql:`SELECT\n  c.customer_id,\n  c.name,\n  COUNT(o.order_id)         AS total_orders,\n  SUM(o.total_amount)       AS lifetime_value,\n  ROUND(AVG(o.total_amount),2) AS avg_order_value\nFROM customers c\nJOIN orders o ON c.customer_id = o.customer_id\nWHERE o.status != 'cancelled'\nGROUP BY c.customer_id, c.name\nORDER BY lifetime_value DESC;`},
+  {level:'Advanced',badge:'b-adv',title:'Products with above-average price in their category',hint:'Use a correlated subquery or window function AVG() OVER(PARTITION BY).',sql:`SELECT\n  p.name,\n  p.price,\n  cat.name AS category,\n  ROUND(AVG(p.price) OVER (PARTITION BY p.category_id),2) AS cat_avg_price\nFROM products p\nJOIN categories cat ON p.category_id = cat.category_id\nWHERE p.price > (\n  SELECT AVG(price) FROM products p2\n  WHERE p2.category_id = p.category_id\n)\nORDER BY cat.name, p.price DESC;`},
+  {level:'Advanced',badge:'b-adv',title:'Delivery time analysis per carrier (avg days to deliver)',hint:'DATEDIFF or date subtraction between shipped_at and delivered_at.',sql:`SELECT\n  carrier,\n  COUNT(*) AS total_shipments,\n  ROUND(AVG(EXTRACT(EPOCH FROM (delivered_at - shipped_at))/86400),1) AS avg_delivery_days\nFROM shipments\nWHERE delivered_at IS NOT NULL\nGROUP BY carrier\nORDER BY avg_delivery_days;`},
+  {level:'Advanced',badge:'b-adv',title:'Repeat customers (ordered more than once) vs one-time buyers',hint:'Use HAVING COUNT > 1, then CASE or two CTEs to categorize.',sql:`WITH order_counts AS (\n  SELECT customer_id, COUNT(*) AS order_count\n  FROM orders\n  WHERE status != 'cancelled'\n  GROUP BY customer_id\n)\nSELECT\n  CASE WHEN order_count = 1 THEN 'One-time buyer'\n       ELSE 'Repeat customer' END AS customer_type,\n  COUNT(*) AS customer_count\nFROM order_counts\nGROUP BY customer_type;`},
+  {level:'Expert',badge:'b-expert',title:'Running total of revenue per customer (window function)',hint:'SUM() OVER (PARTITION BY customer ORDER BY order_date) gives a running total.',sql:`SELECT\n  c.name,\n  o.order_date,\n  o.total_amount,\n  SUM(o.total_amount) OVER (\n    PARTITION BY c.customer_id\n    ORDER BY o.order_date\n  ) AS running_total\nFROM orders o\nJOIN customers c ON o.customer_id = c.customer_id\nWHERE o.status != 'cancelled'\nORDER BY c.name, o.order_date;`},
+  {level:'Expert',badge:'b-expert',title:'Rank products by revenue within each category',hint:'RANK() or DENSE_RANK() OVER (PARTITION BY category_id ORDER BY revenue DESC).',sql:`WITH product_revenue AS (\n  SELECT\n    p.product_id,\n    p.name,\n    p.category_id,\n    cat.name AS category,\n    SUM(oi.unit_price * oi.quantity) AS revenue\n  FROM order_items oi\n  JOIN products p ON oi.product_id = p.product_id\n  JOIN categories cat ON p.category_id = cat.category_id\n  GROUP BY p.product_id, p.name, p.category_id, cat.name\n)\nSELECT\n  category,\n  name,\n  revenue,\n  RANK() OVER (PARTITION BY category_id ORDER BY revenue DESC) AS rank_in_category\nFROM product_revenue\nORDER BY category, rank_in_category;`},
+  {level:'Expert',badge:'b-expert',title:'Find customers who bought in consecutive months (churn detection)',hint:'Use LAG() to find the previous order month per customer, then check the gap.',sql:`WITH monthly_orders AS (\n  SELECT DISTINCT\n    customer_id,\n    DATE_TRUNC('month', order_date) AS order_month\n  FROM orders\n  WHERE status != 'cancelled'\n),\nwith_lag AS (\n  SELECT\n    customer_id,\n    order_month,\n    LAG(order_month) OVER (PARTITION BY customer_id ORDER BY order_month) AS prev_month\n  FROM monthly_orders\n)\nSELECT DISTINCT customer_id\nFROM with_lag\nWHERE order_month = prev_month + INTERVAL '1 month';`},
+];
+
+const bankExercises=[
+  {level:'Basic',badge:'b-basic',title:'List all active savings accounts with balance > ₹50,000',hint:'Simple WHERE with AND combining account_type, status, and balance.',sql:`SELECT account_id, customer_id, balance\nFROM accounts\nWHERE account_type = 'savings'\n  AND status = 'active'\n  AND balance > 50000;`},
+  {level:'Basic',badge:'b-basic',title:'Count transactions by channel (UPI, ATM, NEFT…)',hint:'GROUP BY channel with COUNT.',sql:`SELECT channel, COUNT(*) AS txn_count\nFROM transactions\nGROUP BY channel\nORDER BY txn_count DESC;`},
+  {level:'Basic',badge:'b-basic',title:'Find all customers with pending KYC',hint:'Filter on kyc_status column.',sql:`SELECT customer_id, name, email, city\nFROM customers\nWHERE kyc_status = 'pending';`},
+  {level:'Basic',badge:'b-basic',title:'Find failed transactions in the last 3 months',hint:'Filter by status = failed and txn_at date range.',sql:`SELECT *\nFROM transactions\nWHERE status = 'failed'\n  AND txn_at >= CURRENT_DATE - INTERVAL '3 months';`},
+  {level:'Basic',badge:'b-basic',title:'List all active loans with interest rate above 10%',hint:'Simple WHERE with two conditions.',sql:`SELECT loan_id, customer_id, loan_type, principal, interest_rate\nFROM loans\nWHERE status = 'active'\n  AND interest_rate > 10\nORDER BY interest_rate DESC;`},
+  {level:'Intermediate',badge:'b-inter',title:'Total deposits and withdrawals per customer',hint:'JOIN transactions → accounts → customers. Use conditional SUM with CASE WHEN.',sql:`SELECT\n  c.name,\n  SUM(CASE WHEN t.txn_type='credit' THEN t.amount ELSE 0 END) AS total_deposits,\n  SUM(CASE WHEN t.txn_type='debit'  THEN t.amount ELSE 0 END) AS total_withdrawals\nFROM transactions t\nJOIN accounts a ON t.account_id = a.account_id\nJOIN customers c ON a.customer_id = c.customer_id\nWHERE t.status = 'success'\nGROUP BY c.customer_id, c.name;`},
+  {level:'Intermediate',badge:'b-inter',title:'Customers with multiple accounts and their combined balance',hint:'GROUP BY customer, SUM balance, COUNT accounts.',sql:`SELECT\n  c.name,\n  COUNT(a.account_id) AS account_count,\n  SUM(a.balance)      AS total_balance\nFROM customers c\nJOIN accounts a ON c.customer_id = a.customer_id\nGROUP BY c.customer_id, c.name\nHAVING COUNT(a.account_id) > 1\nORDER BY total_balance DESC;`},
+  {level:'Intermediate',badge:'b-inter',title:'Overdue loan payment rate per loan type',hint:'JOIN loan_payments to loans, use AVG(is_overdue::int) or COUNT CASE.',sql:`SELECT\n  l.loan_type,\n  COUNT(lp.payment_id) AS total_payments,\n  SUM(CASE WHEN lp.is_overdue THEN 1 ELSE 0 END) AS overdue_count,\n  ROUND(100.0 * SUM(CASE WHEN lp.is_overdue THEN 1 ELSE 0 END) / COUNT(*),2) AS overdue_pct\nFROM loan_payments lp\nJOIN loans l ON lp.loan_id = l.loan_id\nGROUP BY l.loan_type;`},
+  {level:'Intermediate',badge:'b-inter',title:'Monthly transaction volume and value in 2024',hint:'EXTRACT month from txn_at, COUNT and SUM, GROUP BY month.',sql:`SELECT\n  EXTRACT(MONTH FROM txn_at) AS month,\n  COUNT(*)      AS txn_count,\n  SUM(amount)   AS total_value\nFROM transactions\nWHERE EXTRACT(YEAR FROM txn_at) = 2024\n  AND status = 'success'\nGROUP BY month\nORDER BY month;`},
+  {level:'Intermediate',badge:'b-inter',title:'Customers with no transactions in the last 6 months (dormant)',hint:'LEFT JOIN transactions with a date filter, check NULL to find no recent activity.',sql:`SELECT c.customer_id, c.name, c.email\nFROM customers c\nJOIN accounts a ON c.customer_id = a.customer_id\nLEFT JOIN transactions t\n  ON a.account_id = t.account_id\n  AND t.txn_at >= CURRENT_DATE - INTERVAL '6 months'\n  AND t.status = 'success'\nWHERE t.txn_id IS NULL\nGROUP BY c.customer_id, c.name, c.email;`},
+  {level:'Advanced',badge:'b-adv',title:'High-value customers by total loan principal and repayment rate',hint:'JOIN loans and loan_payments, calculate repayment ratio per customer.',sql:`SELECT\n  c.name,\n  SUM(l.principal)    AS total_borrowed,\n  SUM(lp.amount_paid) AS total_repaid,\n  ROUND(100.0 * SUM(lp.amount_paid) / NULLIF(SUM(l.principal),0),2) AS repayment_pct\nFROM customers c\nJOIN loans l ON c.customer_id = l.customer_id\nJOIN loan_payments lp ON l.loan_id = lp.loan_id\nGROUP BY c.customer_id, c.name\nORDER BY total_borrowed DESC;`},
+  {level:'Advanced',badge:'b-adv',title:'Detect accounts with unusual spike: transaction > 3x their average',hint:'Use a subquery or CTE to compute per-account average, then find outliers.',sql:`WITH account_avg AS (\n  SELECT account_id, AVG(amount) AS avg_amount\n  FROM transactions\n  WHERE status = 'success'\n  GROUP BY account_id\n)\nSELECT t.txn_id, t.account_id, t.amount, ROUND(a.avg_amount,2) AS avg_amount\nFROM transactions t\nJOIN account_avg a ON t.account_id = a.account_id\nWHERE t.amount > 3 * a.avg_amount\n  AND t.status = 'success'\nORDER BY t.amount DESC;`},
+  {level:'Advanced',badge:'b-adv',title:'Branch-wise total active loan exposure',hint:'Need to join branches to customers — add a branch_id to accounts or use city as proxy.',sql:`-- Proxy: match customer city to branch city\nSELECT\n  b.name AS branch,\n  COUNT(l.loan_id) AS active_loans,\n  SUM(l.principal) AS total_exposure\nFROM loans l\nJOIN customers c ON l.customer_id = c.customer_id\nJOIN branches b ON c.city = b.city\nWHERE l.status = 'active'\nGROUP BY b.branch_id, b.name\nORDER BY total_exposure DESC;`},
+  {level:'Expert',badge:'b-expert',title:'Rolling 7-day transaction volume per account (window function)',hint:'SUM OVER (PARTITION BY account ORDER BY date RANGE BETWEEN 6 PRECEDING AND CURRENT ROW).',sql:`SELECT\n  account_id,\n  txn_at::DATE AS txn_date,\n  amount,\n  SUM(amount) OVER (\n    PARTITION BY account_id\n    ORDER BY txn_at::DATE\n    RANGE BETWEEN '6 days' PRECEDING AND CURRENT ROW\n  ) AS rolling_7d_volume\nFROM transactions\nWHERE status = 'success'\nORDER BY account_id, txn_date;`},
+  {level:'Expert',badge:'b-expert',title:'Flag customers whose spending increased by >50% month over month',hint:'Use LAG() to compare current month spend to previous month per customer.',sql:`WITH monthly AS (\n  SELECT\n    a.customer_id,\n    DATE_TRUNC('month', t.txn_at) AS month,\n    SUM(t.amount) AS monthly_spend\n  FROM transactions t\n  JOIN accounts a ON t.account_id = a.account_id\n  WHERE t.txn_type = 'debit' AND t.status = 'success'\n  GROUP BY a.customer_id, month\n),\nwith_lag AS (\n  SELECT *,\n    LAG(monthly_spend) OVER (PARTITION BY customer_id ORDER BY month) AS prev_spend\n  FROM monthly\n)\nSELECT customer_id, month, monthly_spend, prev_spend,\n  ROUND(100.0*(monthly_spend-prev_spend)/NULLIF(prev_spend,0),1) AS pct_change\nFROM with_lag\nWHERE monthly_spend > 1.5 * prev_spend\nORDER BY pct_change DESC;`},
+  {level:'Expert',badge:'b-expert',title:'Fraud risk score: rank accounts by frequency + amount of flagged txns',hint:'JOIN fraud_flags → transactions → accounts, use RANK() on composite score.',sql:`WITH fraud_stats AS (\n  SELECT\n    ff.account_id,\n    COUNT(*)        AS flag_count,\n    SUM(t.amount)   AS flagged_amount,\n    AVG(ff.risk_score) AS avg_risk_score\n  FROM fraud_flags ff\n  JOIN transactions t ON ff.txn_id = t.txn_id\n  GROUP BY ff.account_id\n)\nSELECT\n  fs.account_id,\n  c.name,\n  fs.flag_count,\n  fs.flagged_amount,\n  ROUND(fs.avg_risk_score,2) AS avg_risk,\n  RANK() OVER (ORDER BY fs.avg_risk_score DESC) AS risk_rank\nFROM fraud_stats fs\nJOIN accounts a ON fs.account_id = a.account_id\nJOIN customers c ON a.customer_id = c.customer_id\nORDER BY risk_rank;`},
+];
+
+let currentExDB='ecom';
+let activeFilters=new Set(['Basic','Intermediate','Advanced','Expert']);
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(t).classList.add('active');
+}
+function switchDB(db,btn){
+  document.querySelectorAll('#schema .dbt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('ecom-schema').style.display=db==='ecom'?'block':'none';
+  document.getElementById('bank-schema').style.display=db==='bank'?'block':'none';
+}
+function switchExDB(db,btn){
+  document.querySelectorAll('#exercises .dbt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  currentExDB=db;
+  renderExercises();
+}
+function switchSetupDB(db,btn){
+  document.querySelectorAll('#setup .dbt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('ecom-setup').style.display=db==='ecom'?'block':'none';
+  document.getElementById('bank-setup').style.display=db==='bank'?'block':'none';
+}
+function toggleFilter(level,btn){
+  if(activeFilters.has(level))activeFilters.delete(level);
+  else activeFilters.add(level);
+  btn.classList.toggle('on');
+  renderExercises();
+}
+function renderExercises(){
+  const list=document.getElementById('ex-list');
+  const data=currentExDB==='ecom'?ecomExercises:bankExercises;
+  const filtered=data.filter(e=>activeFilters.has(e.level));
+  list.innerHTML=filtered.map((e,i)=>`
+    <div class="ex" onclick="toggleEx(this)">
+      <div class="ex-header">
+        <span class="badge ${e.badge}">${e.level}</span>
+        <span class="ex-title">${e.title}</span>
+      </div>
+      <div class="ex-body">
+        <p class="hint"><i class="ti ti-bulb" aria-hidden="true"></i> ${e.hint}</p>
+        <pre>${e.sql}</pre>
+        <button class="ask-btn" onclick="event.stopPropagation();sendPrompt('Explain this SQL query in detail and suggest a variation: ${e.title.replace(/'/g,"\\'")}')">Ask Claude to explain ↗</button>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleEx(el){el.classList.toggle('open');}
+renderExercises();
+</script>
