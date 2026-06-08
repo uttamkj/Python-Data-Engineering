@@ -588,3 +588,137 @@ bad = [
         "error": "ValueError ..."
     }
 ]
+
+'''🔶 Data Engineering link: Pattern 2 — separate good rows from bad rows into different output files — is exactly the Dead Letter Queue pattern used in every production pipeline. Bad rows go to a quarantine location for manual review; good rows proceed to the Silver layer. Pattern 3 — config-driven pipelines — is how Databricks jobs are configured: a JSON config file controls batch size, paths, and settings, so you never hardcode values.'''
+# Day 13 Task — Try-Except + File Handling: Robust ETL Pipeline
+
+import json
+
+# ===== STEP 0: Write raw input file (simulating a source CSV) =====
+
+raw_csv = """id,name,salary,dept
+101, ravi kumar ,75000,engineering
+102, priya sharma ,88000,data
+103, ankit singh ,bad_salary,sales
+104,,91000,engineering
+105, sneha rao ,67000,marketing
+106, raj verma ,62000,data
+"""
+
+with open("raw_employees.csv", "w") as f:
+    f.write(raw_csv)
+
+print("✅ raw_employees.csv created")
+
+
+# ===== STEP 1: Config =====
+
+VALID_DEPTS = [
+    "engineering",
+    "data",
+    "sales",
+    "hr"
+]
+
+
+# ===== STEP 2: Safe transform function =====
+
+def transform_row(parts, line_num):
+    """
+    Parse and validate one CSV row.
+
+    Returns:
+        (record, None)
+        OR
+        (None, error)
+    """
+
+    try:
+        emp_id, name, salary, dept = parts
+
+        if not name.strip():
+            raise ValueError("empty name")
+
+        if dept.strip().lower() not in VALID_DEPTS:
+            raise ValueError(
+                f"invalid dept: {dept.strip()}"
+            )
+
+        return {
+            "id": int(emp_id),
+            "name": name.strip().title(),
+            "salary": float(salary),      # raises ValueError for bad_salary
+            "dept": dept.strip().lower(),
+            "bonus": round(float(salary) * 0.10, 2),
+        }, None
+
+    except ValueError as e:
+        return None, {
+            "line": line_num,
+            "raw": parts,
+            "error": str(e)
+        }
+
+
+# ===== STEP 3: Read and process =====
+
+silver = []
+errors = []
+
+try:
+    with open("raw_employees.csv", "r") as f:
+        lines = f.readlines()
+
+    for i, line in enumerate(lines[1:], start=2):
+        # skip header, count from line 2
+
+        parts = line.strip().split(",")
+
+        if len(parts) != 4:
+            continue
+
+        rec, err = transform_row(parts, i)
+
+        (silver if rec else errors).append(
+            rec or err
+        )
+
+except FileNotFoundError:
+    print("❌ Input file missing — pipeline aborted")
+    exit(1)
+
+
+# ===== STEP 4: Write outputs =====
+
+with open("silver_employees.json", "w") as f:
+    json.dump(silver, f, indent=2)
+
+with open("error_log.json", "w") as f:
+    json.dump(errors, f, indent=2)
+
+
+# ===== STEP 5: Report =====
+
+print("\n===== PIPELINE COMPLETE =====")
+
+print(f"✅ Silver rows   : {len(silver)}")
+print(f"❌ Rejected rows : {len(errors)}")
+
+print("\n--- Silver Layer ---")
+
+for r in silver:
+    print(
+        f"[{r['id']}] "
+        f"{r['name']:18} "
+        f"₹{r['salary']:>8,.0f} "
+        f"Bonus: ₹{r['bonus']:>8,.0f}"
+    )
+
+print("\n--- Error Log ---")
+
+for e in errors:
+    print(
+        f"Line {e['line']}: "
+        f"{e['error']}"
+    )
+
