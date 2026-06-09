@@ -1,0 +1,1 @@
+# Project: HR Data Pipeline — a complete 4-phase ETL pipeline that reads raw employee data from a CSV, cleans and validates it, analyses it, and writes professional JSON output files. This is your first real GitHub-worthy project.
