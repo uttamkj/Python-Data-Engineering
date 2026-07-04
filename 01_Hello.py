@@ -12,7 +12,7 @@ In this case, it is just another comment that will not be executed by the Python
 
 #Variables 
 
-x = 10 
+x = 20 
 y = 20.50
 first_name = "Uttam Kumar "
 last_name = "Jena"
