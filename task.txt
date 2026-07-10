@@ -1,0 +1,9 @@
+Date : 08-07-2026
+Python 2 hr pratice including the coding questions and theoritical questions ( i have written in the copy)
+
+sql pratice write and watch the youtube video 
+
+Theory completed . Coding pratice afternoon planned 
+then in evening sql video and pratice write 
+
+Next : pandas
