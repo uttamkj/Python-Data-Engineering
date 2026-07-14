@@ -117,3 +117,50 @@ def get_max(prices):
     return max_profit
 
 print(get_max(prices))
+
+
+x = [1,2,3,4,
+     ['apple','banana','mango',
+      ['tomato','beans',
+       ['pencil','pen','krish'],
+       'coriander'],
+      'watermelon']]
+
+result = []
+
+def flatten(lst):
+    for i in lst:
+        if isinstance(i, list):
+            flatten(i)
+        else:
+            result.append(i)
+
+flatten(x)
+print(result)
+
+
+# •	Kadane Algorithm 
+def max_subarray_sum(arr):
+    # Handle empty array case
+    if not arr:
+        return 0
+        
+    # Initialize both variables with the first element
+    current_max = arr[0]
+    global_max = arr[0]
+    
+    # Iterate through the rest of the array
+    for num in arr[1:]:
+        # Decide whether to add the current number to the existing subarray 
+        # or start a new subarray from the current number
+        current_max = max(num, current_max + num)
+        
+        # Update the overall maximum found so far
+        global_max = max(global_max, current_max)
+        
+    return global_max
+
+# Example Usage:
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print(f"Maximum Subarray Sum: {max_subarray_sum(nums)}")
+# Output: 6 (The subarray is [4, -1, 2, 1])
