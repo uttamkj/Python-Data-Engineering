@@ -1,8 +1,9 @@
 
 try:
-  y = 10/0
+  print("Line 3")
   x = int('abc')
-
+  y = 10/0
+  print("Line 6")
 except(ZeroDivisionError,ValueError) as e:
   print('Error: ', e)
 
@@ -16,3 +17,7 @@ else:
   print('file read successfully')
 finally:
   print('finally block')
+
+
+with open('/content/t3.txt','wra') as file:
+  file.write('wassup bro')
