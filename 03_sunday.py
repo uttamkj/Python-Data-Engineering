@@ -26,6 +26,8 @@ data = {
 df = pd.DataFrame(data)
 df.to_csv('/content/sdata.csv', index=False)
 
+print("There random is importand please pratice it ")
+
 # 2. Run your chunking program
 chunk = 10
 first_chunk = True
