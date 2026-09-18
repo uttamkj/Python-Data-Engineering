@@ -51,3 +51,86 @@ while is_race_on:
         turtle.forward(rand_distance)
 
 screen.exitonclick()
+
+
+
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.types import StructType, StructField, IntegerType, StringType
+
+spark = SparkSession.builder.appName("DataQuality").getOrCreate()
+
+# Create DataFrame
+data = [
+    {"user_id": 1, "name": "Alice", "email": "alice@gmail.com", "age": 25},
+    {"user_id": 1, "name": "Alice", "email": "alice@gmail.com", "age": 25},  # Duplicate
+    {"user_id": 2, "name": "Bob", "email": None, "age": 30},  # Missing email
+    {"user_id": 3, "name": "Charlie", "email": "charlie@gmail.com", "age": None},  # Missing age
+    {"user_id": 4, "name": "David", "email": "david@gmail.com", "age": 150},  # Invalid age
+]
+
+df = spark.createDataFrame(data)
+
+# Step 1: Remove exact duplicates
+df_no_dupes = df.dropDuplicates()
+
+# Step 2: Identify data quality issues
+# Create a column that flags issues
+df_with_issues = df_no_dupes.withColumn(
+    "quality_issue",
+    F.when(F.col("email").isNull() | F.col("age").isNull(), "Missing value") \
+     .when((F.col("age") > 120) | (F.col("age") < 0), "Invalid age") \
+     .otherwise("None")
+)
+
+# Step 3: Split into clean and issues
+clean_data = df_with_issues.filter(F.col("quality_issue") == "None") \
+    .drop("quality_issue")
+
+data_quality_issues = df_with_issues.filter(F.col("quality_issue") != "None") \
+    .select("user_id", "name", "email", "age", "quality_issue")
+
+# Show results
+print("=== CLEAN DATA ===")
+clean_data.show()
+
+print("\n=== DATA QUALITY ISSUES ===")
+data_quality_issues.show()
+
+from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
+from pyspark.sql.window import Window
+
+# Initialize Spark
+spark = SparkSession.builder.appName("EmployeeRanking").getOrCreate()
+
+# Create DataFrame
+data = [
+    {"emp_id": 1, "name": "Alice", "dept": "Sales", "salary": 50000, "bonus": 5000},
+    {"emp_id": 2, "name": "Bob", "dept": "IT", "salary": 60000, "bonus": 8000},
+    {"emp_id": 3, "name": "Charlie", "dept": "Sales", "salary": 55000, "bonus": 6000},
+    {"emp_id": 4, "name": "David", "dept": "IT", "salary": 65000, "bonus": 9000},
+    {"emp_id": 5, "name": "Eve", "dept": "Sales", "salary": 52000, "bonus": 5500}
+]
+
+df = spark.createDataFrame(data)
+
+# Step 1: Define window for ranking within each department
+dept_window = Window.partitionBy("dept").orderBy(F.desc("salary"))
+
+# Step 2: Add rank column
+ranked_df = df.withColumn("rank_in_dept", F.row_number().over(dept_window))
+
+# Step 3: Calculate total department salary budget
+dept_budget_window = Window.partitionBy("dept")
+budget_df = ranked_df.withColumn(
+    "total_dept_budget", 
+    F.sum("salary").over(dept_budget_window)
+)
+
+# Step 4: Filter for rank #1 or #2
+final_df = budget_df.filter(F.col("rank_in_dept") <= 2) \
+    .select("emp_id", "name", "dept", "salary", "rank_in_dept", "total_dept_budget") \
+    .orderBy("dept", "rank_in_dept")
+
+final_df.show()
